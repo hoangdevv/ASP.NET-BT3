@@ -13,6 +13,22 @@
       "PackagePath": "staticwebassets\\favicon.ico"
     },
     {
+      "Id": "C:\\Code\\Hutech\\C#\\ASP.NetCoreMVC\\WebApplication2\\WebApplication2\\wwwroot\\images\\download (1).jpg",
+      "PackagePath": "staticwebassets\\images\\download (1).jpg"
+    },
+    {
+      "Id": "C:\\Code\\Hutech\\C#\\ASP.NetCoreMVC\\WebApplication2\\WebApplication2\\wwwroot\\images\\iphone-x-600x598.png",
+      "PackagePath": "staticwebassets\\images\\iphone-x-600x598.png"
+    },
+    {
+      "Id": "C:\\Code\\Hutech\\C#\\ASP.NetCoreMVC\\WebApplication2\\WebApplication2\\wwwroot\\images\\iphone8.jpg",
+      "PackagePath": "staticwebassets\\images\\iphone8.jpg"
+    },
+    {
+      "Id": "C:\\Code\\Hutech\\C#\\ASP.NetCoreMVC\\WebApplication2\\WebApplication2\\wwwroot\\images\\open.png",
+      "PackagePath": "staticwebassets\\images\\open.png"
+    },
+    {
       "Id": "C:\\Code\\Hutech\\C#\\ASP.NetCoreMVC\\WebApplication2\\WebApplication2\\wwwroot\\js\\site.js",
       "PackagePath": "staticwebassets\\js\\site.js"
     },

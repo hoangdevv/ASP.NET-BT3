@@ -9,6 +9,7 @@ namespace WebApplication2.Repository
         Task AddAsync(Category category);
         Task UpdateAsync(Category category);
         Task DeleteAsync(int id);
+        Task<string> GetCategoryNameById(int categoryId);
     }
 
 }

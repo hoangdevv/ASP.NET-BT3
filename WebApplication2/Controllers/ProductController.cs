@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 using WebApplication2.Models;
 using WebApplication2.Repository;
 
@@ -44,6 +45,7 @@ namespace WebApplication2.Controllers
             ViewBag.Categories = new SelectList(categories, "Id", "Name");
             return View(product);
         }
+
         // Hiển thị thông tin chi tiết sản phẩm
         public async Task<IActionResult> Display(int id)
         {
@@ -101,44 +103,76 @@ namespace WebApplication2.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Add(Product product, IFormFile imageUrl, int categoryId)
+        public async Task<IActionResult> AddImages(Product product, IFormFile? imageUrl)
         {
             if (ModelState.IsValid)
             {
                 if (imageUrl != null && imageUrl.Length > 0)
                 {
-                    // Save the image to the database and get the image path or ID
-                    string imagePath = await SaveImage(imageUrl);
-                    // Update the image path for the product
-                    product.ImageUrl = imagePath;
+                    // Lưu hình ảnh đại diện
+                    product.ImageUrl = await SaveImage(imageUrl);
                 }
 
-                // Set the CategoryId for the product
-                product.CategoryId = categoryId;
-
-                // Add the product to the database
                 await _productRepository.AddAsync(product);
                 return RedirectToAction(nameof(Index));
             }
+            // Nếu ModelState không hợp lệ, hiển thị form với dữ liệu đã nhập
+            var categories = await _categoryRepository.GetAllAsync();
+            ViewBag.Categories = new SelectList(categories, "Id", "Name");
+            return View(product);
+        }
+
+
+        [HttpPost]
+        public async Task<IActionResult> UpdateImages(int id, Product product, IFormFile? imageUrl)
+        {
+            if (id != product.Id)
+            {
+                return NotFound();
+            }
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    if (imageUrl != null && imageUrl.Length > 0)
+                    {
+                        // Lưu hình ảnh mới
+                        product.ImageUrl = await SaveImage(imageUrl);
+                    }
+
+                    await _productRepository.UpdateAsync(product);
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!await _productRepository.ExistsAsync(id))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                return RedirectToAction(nameof(Index));
+            }
+
+            // Nếu ModelState không hợp lệ, hiển thị form với dữ liệu đã nhập
+            var categories = await _categoryRepository.GetAllAsync();
+            ViewBag.Categories = new SelectList(categories, "Id", "Name");
             return View(product);
         }
 
 
         private async Task<string> SaveImage(IFormFile image)
         {
-            var fileName = Guid.NewGuid().ToString() + Path.GetExtension(image.FileName);
-            var filePath = Path.Combine("wwwroot/images", fileName); // Đường dẫn lưu trữ hình ảnh trên máy chủ
-
-            using (var fileStream = new FileStream(filePath, FileMode.Create))
+            var savePath = Path.Combine("wwwroot/images", image.FileName); // Thay đổi đường dẫn theo cấu hình của bạn
+   using (var fileStream = new FileStream(savePath, FileMode.Create))
             {
                 await image.CopyToAsync(fileStream);
             }
-
-            return "/images/" + fileName; // Trả về đường dẫn tương đối của hình ảnh
+            return "/images/" + image.FileName; // Trả về đường dẫn tương đối
         }
-
-
-
 
     }
 }

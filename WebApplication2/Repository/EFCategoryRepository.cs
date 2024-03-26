@@ -35,5 +35,12 @@ namespace WebApplication2.Repository
             _context.Categories.Remove(category);
             await _context.SaveChangesAsync();
         }
+
+        public async Task<string> GetCategoryNameById(int categoryId)
+        {
+            var category = await _context.Categories.FindAsync(categoryId);
+            return category != null ? category.Name : "No Category";
+        }
+
     }
 }
